@@ -1,0 +1,4 @@
+<Solution>
+  <Project Path="AICodeReviewer.Console/AICodeReviewer.Console.csproj" />
+  <Project Path="AICodeReviewer.Core/AICodeReviewer.Core.csproj" />
+</Solution>

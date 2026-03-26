@@ -1,0 +1,103 @@
+# Build output
+bin/
+obj/
+*.exe
+*.dll
+*.exe.mdb
+*.dll.mdb
+*.pdb
+
+# IDE and Editor files
+.vs/
+.vscode/
+.idea/
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+
+# Project specific
+
+AICodeReviewer.Console/appsettings.Development.json
+*.pidb
+*.userprefs
+
+# NuGet packages
+packages/
+*.nupkg
+*.snupkg
+
+# Test results
+TestResults/
+*.trx
+*.coverage
+*.coveragexml
+
+# User secrets
+secrets.json
+*.secrets.json
+
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+*.tmp
+*.log
+
+# Sample projects (optional - uncomment if you don't want to commit samples)
+# samples/
+
+# Backup files
+*~
+*.bak
+*.backup
+
+# Code coverage
+*.coverage
+*.coveragexml
+
+# Publish output
+publish/
+*.deploy
+
+# Local configuration
+launchSettings.json
+appsettings.Local.json
+
+# Error logs
+*.log
+error_log.txt
+
+# Dependency directories
+node_modules/
+jspm_packages/
+
+# Compiled output
+dist/
+out/
+build/
+
+# Rider
+.idea/
+*.sln.iml
+
+# Visual Studio Code
+.vscode/
+*.code-workspace
+
+# Azure Functions
+.local/
+
+# Benchmark results
+BenchmarkDotNet.Artifacts/
+
+# Profiling
+*.profiling
+
+# Documentation
+docs/_build/
+site/

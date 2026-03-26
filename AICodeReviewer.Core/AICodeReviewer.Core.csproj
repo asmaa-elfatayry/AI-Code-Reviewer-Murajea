@@ -1,0 +1,36 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+	<PropertyGroup>
+		<OutputType>Exe</OutputType>
+		<TargetFramework>net8.0</TargetFramework>
+		<ImplicitUsings>enable</ImplicitUsings>
+		<Nullable>enable</Nullable>
+
+		<!-- حزمة Global Tool (للنشر) -->
+		<PackAsTool>true</PackAsTool>
+		<ToolCommandName>ai-reviewer</ToolCommandName>
+		<PackageId>AICodeReviewer</PackageId>
+		<Title>AI Code Reviewer - Murajea</Title>
+		<Authors>Asmaa_Omar</Authors>
+		<Description>AI-powered code review tool for .NET developers</Description>
+		<Version>1.0.0</Version>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<ProjectReference Include="..\AICodeReviewer.Core\AICodeReviewer.Core.csproj" />
+
+		<!-- لقراءة appsettings.json -->
+		<PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="8.0.0" />
+		<PackageReference Include="Microsoft.Extensions.Configuration.EnvironmentVariables" Version="8.0.0" />
+
+		<!-- لإنشاء PDF -->
+		<PackageReference Include="QuestPDF" Version="2024.12.2" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<None Update="appsettings.json">
+			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</None>
+	</ItemGroup>
+
+</Project>
