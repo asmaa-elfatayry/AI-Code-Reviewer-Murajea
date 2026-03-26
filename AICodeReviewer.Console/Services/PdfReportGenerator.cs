@@ -22,7 +22,7 @@ public class PdfReportGenerator
                 page.Margin(40);
                 page.DefaultTextStyle(x => x.FontSize(11).FontFamily("Segoe UI"));
 
-                // Header with Gradient Effect
+                // Header
                 page.Header()
                     .ShowOnce()
                     .Column(col =>
@@ -63,7 +63,7 @@ public class PdfReportGenerator
                     .PaddingVertical(20)
                     .Column(col =>
                     {
-                        // Summary Section with Cards
+                        // Summary Section
                         col.Item().PaddingBottom(20).Column(summaryCol =>
                         {
                             summaryCol.Item().Text("📊 EXECUTIVE SUMMARY")
@@ -76,7 +76,6 @@ public class PdfReportGenerator
                                 // Total Issues Card
                                 row.RelativeItem().Background(Colors.Grey.Lighten3)
                                     .Padding(15)
-                                    .CornerRadius(8)
                                     .Column(card =>
                                     {
                                         card.Item().Text("TOTAL ISSUES")
@@ -94,7 +93,6 @@ public class PdfReportGenerator
                                 // Critical Issues Card
                                 row.RelativeItem().Background(Colors.Red.Lighten4)
                                     .Padding(15)
-                                    .CornerRadius(8)
                                     .Column(card =>
                                     {
                                         card.Item().Text("CRITICAL")
@@ -112,7 +110,6 @@ public class PdfReportGenerator
                                 // Warnings Card
                                 row.RelativeItem().Background(Colors.Orange.Lighten4)
                                     .Padding(15)
-                                    .CornerRadius(8)
                                     .Column(card =>
                                     {
                                         card.Item().Text("WARNINGS")
@@ -130,7 +127,6 @@ public class PdfReportGenerator
                                 // Functions Card
                                 row.RelativeItem().Background(Colors.Green.Lighten4)
                                     .Padding(15)
-                                    .CornerRadius(8)
                                     .Column(card =>
                                     {
                                         card.Item().Text("FUNCTIONS")
@@ -150,7 +146,6 @@ public class PdfReportGenerator
                             var score = CalculateQualityScore(result);
                             summaryCol.Item().PaddingTop(15).Background(Colors.Blue.Lighten5)
                                 .Padding(15)
-                                .CornerRadius(8)
                                 .Row(row =>
                                 {
                                     row.RelativeItem().Text("CODE QUALITY SCORE:")
@@ -181,7 +176,6 @@ public class PdfReportGenerator
                                 // Function Header
                                 funcCol.Item().Background(Colors.Grey.Lighten4)
                                     .Padding(12)
-                                    .CornerRadius(8)
                                     .Row(row =>
                                     {
                                         row.RelativeItem().Text($"📌 {function.FunctionName}")
@@ -195,11 +189,11 @@ public class PdfReportGenerator
                                             .AlignRight();
                                     });
 
+
                                 // Code Block
                                 funcCol.Item().PaddingTop(10).Background(Colors.Grey.Lighten5)
                                     .Padding(12)
-                                    .CornerRadius(5)
-                                    .Border(0.5f, Colors.Grey.Lighten2)
+                                    .BorderColor(Colors.Grey.Lighten2)
                                     .Text(code =>
                                     {
                                         code.Span("📝 Code:")
@@ -207,9 +201,7 @@ public class PdfReportGenerator
                                             .Bold()
                                             .FontColor(Colors.Grey.Darken2);
 
-                                        code.Span("\n");  // 👈 بديل Line()
-                                        code.Span("\n");  // 👈 بديل Line()
-
+                                        code.Span("\n\n");
 
                                         code.Span(function.Code)
                                             .FontFamily("Consolas")
@@ -231,10 +223,9 @@ public class PdfReportGenerator
 
                                         funcCol.Item().PaddingTop(5).PaddingLeft(10).Background(bgColor)
                                             .Padding(10)
-                                            .CornerRadius(5)
                                             .Row(row =>
                                             {
-                                                row.ConstantColumn(30).Text(icon)
+                                                row.ConstantItem(30).Text(icon)
                                                     .FontSize(14);
 
                                                 row.RelativeItem().Text($"{issue.Severity}: {issue.Message}")
@@ -249,10 +240,9 @@ public class PdfReportGenerator
                                 {
                                     funcCol.Item().PaddingTop(10).Background(Colors.Green.Lighten5)
                                         .Padding(12)
-                                        .CornerRadius(5)
                                         .Row(row =>
                                         {
-                                            row.ConstantColumn(30).Text("💡")
+                                            row.ConstantItem(30).Text("💡")
                                                 .FontSize(14);
 
                                             row.RelativeItem().Text($"Suggestion: {function.Suggestion}")
@@ -298,11 +288,8 @@ public class PdfReportGenerator
 
         if (totalFunctions == 0) return 100;
 
-        // كل issue تنقص 5 نقاط
         var deduction = totalIssues * 5;
         var score = Math.Max(0, 100 - deduction);
-
-        // Critical issues تنقص 10 نقاط إضافية
         score -= result.CriticalIssues * 10;
 
         return Math.Max(0, Math.Min(100, score));
