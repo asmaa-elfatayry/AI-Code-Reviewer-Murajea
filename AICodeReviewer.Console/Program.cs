@@ -27,7 +27,7 @@ class Program
         System.Console.WriteLine();
 
         // قراءة الإعدادات من مجلد الـ tool
-        var config = LoadConfiguration(projectDir);
+        var config = LoadConfiguration();
 
         // قراءة اللغة
         var language = config.Language ?? "en";
@@ -265,9 +265,18 @@ class Program
         return baseDir;
     }
 
-    static AppConfig LoadConfiguration(string projectDir)
+    static AppConfig LoadConfiguration()
     {
-        var configPath = Path.Combine(projectDir, "appsettings.json");
+        // 1. جرب المجلد الحالي (اللي المستخدم واقف فيه)
+        var currentDir = Directory.GetCurrentDirectory();
+        var configPath = Path.Combine(currentDir, "appsettings.json");
+
+        // 2. لو مش موجود، جرب مجلد المشروع (أعلى من bin)
+        if (!File.Exists(configPath) && currentDir.Contains("\\bin\\"))
+        {
+            var projectDir = currentDir.Substring(0, currentDir.IndexOf("\\bin\\"));
+            configPath = Path.Combine(projectDir, "appsettings.json");
+        }
 
         System.Console.WriteLine($"🔍 Looking for config at: {configPath}");
 
@@ -276,20 +285,37 @@ class Program
             try
             {
                 var json = File.ReadAllText(configPath);
-                return JsonSerializer.Deserialize<AppConfig>(json) ?? new AppConfig();
+                var fullConfig = JsonSerializer.Deserialize<JsonElement>(json);
+
+                AppConfig? config = null;
+
+                if (fullConfig.TryGetProperty("Murajea", out var murajeaConfig))
+                {
+                    config = JsonSerializer.Deserialize<AppConfig>(murajeaConfig.GetRawText());
+                }
+                else
+                {
+                    config = JsonSerializer.Deserialize<AppConfig>(json);
+                }
+
+                if (config != null && string.IsNullOrEmpty(config.Language))
+                {
+                    config.Language = "en";
+                }
+
+                return config ?? new AppConfig { Language = "en" };
             }
             catch (Exception ex)
             {
                 System.Console.WriteLine($"⚠️ Error loading config: {ex.Message}");
-                return new AppConfig();
+                return new AppConfig { Language = "en" };
             }
         }
 
-        System.Console.WriteLine($"⚠️ appsettings.json not found at: {configPath}");
-        System.Console.WriteLine("⚠️ Using default configuration");
-        return new AppConfig();
+        System.Console.WriteLine($"⚠️ appsettings.json not found");
+        System.Console.WriteLine("💡 Create appsettings.json in your project folder");
+        return new AppConfig { Language = "en" };
     }
-
     static IAIProvider CreateAIProvider(AppConfig config, string language)
     {
         var provider = config.AI?.Provider?.ToLower() ?? "ollama";

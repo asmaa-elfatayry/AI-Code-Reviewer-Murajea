@@ -4,7 +4,7 @@
 
 ![.NET](https://img.shields.io/badge/.NET-8.0-blue?style=flat-square&logo=dotnet)
 ![License](https://img.shields.io/badge/License-MIT-yellow?style=flat-square)
-![Version](https://img.shields.io/badge/Version-1.0.1-green?style=flat-square)
+![Version](https://img.shields.io/badge/Version-1.0.3-green?style=flat-square)
 [![NuGet](https://img.shields.io/badge/NuGet-AICodeReviewer.Murajea-blue?style=flat-square)](https://www.nuget.org/packages/AICodeReviewer.Murajea)
 
 **AI-powered code review tool for .NET developers**
@@ -29,7 +29,7 @@
 | 📊 **Multiple Report Formats** | Export reviews as Markdown, HTML, or professional PDF |
 | 📄 **Professional PDF Reports** | Beautiful reports with quality scores and color-coded issues |
 | 📁 **Flexible Input** | Review single files, folders, or entire projects |
-| 🚀 **Easy to Use** | Simple command-line interface |
+| 🚀 **Easy to Use** | Simple command-line interface |بق
 
 ---
 
@@ -69,6 +69,54 @@ ai-reviewer D:\MyProject\Services\UserService.cs
 # Review the current directory
 ai-reviewer .
 ```
+
+
+## 📁 Where to Place `appsettings.json`
+
+The tool looks for `appsettings.json` in the **current working directory** (where you run the `ai-reviewer` command).
+
+### ✅ Correct Placement
+
+If your project structure is:
+C:\Users\YourName\source\repos\MyProject
+├── Controllers
+├── Models
+├── Services
+├── Program.cs
+└── appsettings.json ← Place it here
+
+text
+
+Run the tool from the same folder:
+
+```bash
+cd C:\Users\YourName\source\repos\MyProject
+ai-reviewer .
+```
+
+❌ Common Mistake
+If you run the tool from a parent folder, it won't find the config file:
+
+```bash
+cd C:\Users\YourName\source\repos
+ai-reviewer MyProject          // ❌ This will look for appsettings.json in repos folder
+```
+
+💡 Tip
+To check where the tool is looking for the config file, look at the first line after running:
+
+
+🔍 Looking for config at: C:\Users\...\appsettings.json
+If the path is wrong, simply navigate to the correct folder and try again.
+
+Note: You can also specify the full path to your project:
+
+```bash
+ai-reviewer C:\Users\YourName\source\repos\MyProject
+```
+
+The tool will still look for appsettings.json in your current directory, not in the target project folder.
+
 
 ### Example Output
 
@@ -117,23 +165,28 @@ Create an `appsettings.json` file in the directory where you run the tool:
 
 ```json
 {
-  "Language": "en",
-  "AI": {
-    "Provider": "groq",
-    "Models": {
-      "Ollama": "codellama:7b-instruct",
-      "Groq": "llama-3.3-70b-versatile",
-      "DeepSeek": "deepseek-chat"
-    },
-    "Ollama": {
-      "BaseUrl": "http://localhost:11434"
-    },
-    "Groq": {
-      "ApiKey": "YOUR_GROQ_API_KEY"
-    },
-    "DeepSeek": {
-      "ApiKey": "YOUR_DEEPSEEK_API_KEY"
+  "Murajea": {
+    "Language": "en",
+    "AI": {
+      "Provider": "groq",
+      "Models": {
+        "Ollama": "codellama:7b-instruct",
+        "Groq": "llama-3.3-70b-versatile",
+        "DeepSeek": "deepseek-chat"
+      },
+      "Ollama": {
+        "BaseUrl": "http://localhost:11434"
+      },
+      "Groq": {
+        "ApiKey": "YOUR_GROQ_API_KEY"
+      },
+      "DeepSeek": {
+        "ApiKey": "YOUR_DEEPSEEK_API_KEY"
+      }
     }
+  },
+  "OtherAppSettings": {
+    "some": "value"
   }
 }
 ```
@@ -325,10 +378,10 @@ This project is licensed under the **MIT License** – see the [LICENSE](LICENSE
 ## 📧 Contact & Support
 
 - **GitHub Issues:** [Report a bug or request a feature](https://github.com/asmaa-elfatayry/AI-Code-Reviewer-Murajea/issues)
-- **Email:** asmaa.elfatayry@example.com
+- **Email:** asmaa.elfatayry@gmail.com
 
 ---
 
 
-Made with curiosity to help others ✨
+Made with curiosity. Driven by care. Given freely ✨
 
