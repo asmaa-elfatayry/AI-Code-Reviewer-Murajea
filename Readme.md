@@ -1,54 +1,56 @@
-# 🤖 AI Code Reviewer — Murajea (Powered by AI)
+# 🤖 AI Code Reviewer — Murajea
 
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![.NET](https://img.shields.io/badge/.NET-8.0-blue.svg)](https://dotnet.microsoft.com/)
-[![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](http://makeapullrequest.com)
+<div align="center">
 
-**AI Code Reviewer** is a powerful .NET tool that uses Artificial Intelligence to automatically review your C# code and provide professional, actionable feedback. Whether you're working on a small project or a large enterprise application, Murajea helps you write better code by identifying issues, suggesting improvements, and following .NET best practices.
+![.NET](https://img.shields.io/badge/.NET-8.0-blue?style=flat-square&logo=dotnet)
+![License](https://img.shields.io/badge/License-MIT-yellow?style=flat-square)
+![Version](https://img.shields.io/badge/Version-1.0.1-green?style=flat-square)
+[![NuGet](https://img.shields.io/badge/NuGet-AICodeReviewer.Murajea-blue?style=flat-square)](https://www.nuget.org/packages/AICodeReviewer.Murajea)
+
+**AI-powered code review tool for .NET developers**
+
+</div>
+
+---
+
+## 📖 About
+
+**Murajea** (مراجع – Arabic for "reviewer") is a powerful .NET Global Tool that uses Artificial Intelligence to automatically review your C# code and provide professional, actionable feedback. It helps you write better code by identifying issues, suggesting improvements, and following .NET best practices.
 
 ---
 
 ## ✨ Features
 
-- 🔍 **Automated Code Review** – Get instant, AI-powered feedback on your C# code
-- 📊 **Multiple Report Formats** – Export reviews as Markdown, HTML, or professional PDF
-- 🎯 **Multiple AI Providers** – Choose the best option for your needs:
-  - **Ollama** – Local, free, and private (runs on your machine)
-  - **Groq** – Cloud-based, extremely fast, with a generous free tier
-  - **DeepSeek** – Powerful cloud model with excellent code analysis
-- 📁 **Flexible Input** – Review single files, entire folders, or complete projects
-- 📄 **Professional PDF Reports** – Beautifully formatted reports with code quality scores, issue categorization, and detailed suggestions
-- 🌍 **Arabic & English Support** – Reports and interface fully support Arabic text
-- 🚀 **Easy to Use** – Simple command-line interface or right-click integration with VS Code
+| Feature | Description |
+|---|---|
+| 🤖 **AI-Powered Review** | Instant feedback on your C# code using advanced AI models |
+| 🎯 **Multiple AI Providers** | Choose from Ollama (local/free), Groq (fast cloud), or DeepSeek (powerful cloud) |
+| 🌍 **Bilingual Support** | Full support for Arabic (ar) and English (en) |
+| 📊 **Multiple Report Formats** | Export reviews as Markdown, HTML, or professional PDF |
+| 📄 **Professional PDF Reports** | Beautiful reports with quality scores and color-coded issues |
+| 📁 **Flexible Input** | Review single files, folders, or entire projects |
+| 🚀 **Easy to Use** | Simple command-line interface |
 
 ---
 
 ## 🚀 Installation
 
-### Option 1: Install as a .NET Global Tool (Recommended)
+### Install as a .NET Global Tool
 
 ```bash
-dotnet tool install --global AICodeReviewer
+dotnet tool install --global AICodeReviewer.Murajea
 ```
 
-After installation, you can run the tool from anywhere using:
+### Update to Latest Version
 
 ```bash
-ai-reviewer <path-to-code>
+dotnet tool update --global AICodeReviewer.Murajea
 ```
 
-### Option 2: Build from Source
+### Uninstall
 
 ```bash
-# Clone the repository
-git clone https://github.com/asmaa-elfatayry/AI-Code-Reviewer-Murajea
-cd AICodeReviewer
-
-# Build the project
-dotnet build
-
-# Run the tool
-dotnet run --project AICodeReviewer.Console -- <path-to-code>
+dotnet tool uninstall --global AICodeReviewer.Murajea
 ```
 
 ---
@@ -74,6 +76,9 @@ ai-reviewer .
 🤖 AI Code Reviewer — Murajea
 ================================
 
+📁 Tool Directory: C:\Users\...\.dotnet\tools\aicodereviewer.murajea
+🌐 Language: العربية
+
 📡 Using AI Provider: Groq
 📁 Target: D:\MyProject\src
 
@@ -85,35 +90,36 @@ ai-reviewer .
    [2/3] GetUserById... ✅
    [3/3] UpdateUserEmailAsync... ✅
 
-📄 Markdown report saved to: Reports/review_20260326_023748.md
-📄 PDF report saved to: Reports/review_20260326_023748_UserService.pdf
-📄 HTML report saved to: Reports/review_20260326_023748_UserService.html
+📄 Markdown report saved to: D:\MyProject\MurajeaReports\review_20260326_163822.md
+📄 PDF report saved to: D:\MyProject\MurajeaReports\review_20260326_163822_UserService.pdf
+📄 HTML report saved to: D:\MyProject\MurajeaReports\review_20260326_163822_UserService.html
 
 ✨ Review completed!
 ```
 
 ### Reports Location
 
-All reports are saved in the `Reports/` folder inside the directory where you run the tool:
+Reports are saved in the `MurajeaReports/` folder inside your project directory:
 
 ```
-Reports/
-├── review_20260326_023748.md                    # Combined Markdown report
-├── review_20260326_023748_UserService.pdf       # PDF per file
-├── review_20260326_023748_UserService.html      # HTML per file
-└── review_20260326_023748_OrderService.pdf
+D:\MyProject\MurajeaReports/
+├── review_20260326_163822.md                    # Combined Markdown report
+├── review_20260326_163822_UserService.pdf       # PDF per file
+├── review_20260326_163822_UserService.html      # HTML per file
+└── review_20260326_163822_OrderService.pdf
 ```
 
 ---
 
 ## ⚙️ Configuration
 
-Create an `appsettings.json` file in the same directory where you run the tool:
+Create an `appsettings.json` file in the directory where you run the tool:
 
 ```json
 {
+  "Language": "en",
   "AI": {
-    "Provider": "ollama",
+    "Provider": "groq",
     "Models": {
       "Ollama": "codellama:7b-instruct",
       "Groq": "llama-3.3-70b-versatile",
@@ -123,10 +129,10 @@ Create an `appsettings.json` file in the same directory where you run the tool:
       "BaseUrl": "http://localhost:11434"
     },
     "Groq": {
-      "ApiKey": "YOUR_GROQ_API_KEY_HERE"
+      "ApiKey": "YOUR_GROQ_API_KEY"
     },
     "DeepSeek": {
-      "ApiKey": "YOUR_DEEPSEEK_API_KEY_HERE"
+      "ApiKey": "YOUR_DEEPSEEK_API_KEY"
     }
   }
 }
@@ -136,7 +142,8 @@ Create an `appsettings.json` file in the same directory where you run the tool:
 
 | Setting | Description | Default |
 |---|---|---|
-| `AI.Provider` | AI provider to use (`ollama`, `groq`, `deepseek`) | `ollama` |
+| `Language` | Interface language (`ar` or `en`) | `en` |
+| `AI.Provider` | AI provider (`ollama`, `groq`, `deepseek`) | `ollama` |
 | `AI.Models.*` | Model name for each provider | Provider-specific |
 | `AI.Ollama.BaseUrl` | Ollama API endpoint | `http://localhost:11434` |
 | `AI.Groq.ApiKey` | Your Groq API key | Required for Groq |
@@ -202,9 +209,9 @@ ollama serve
 
 ## 📊 Understanding the Report
 
-### Executive Summary Cards
+### Executive Summary
 
-| Card | Description |
+| Metric | Description |
 |---|---|
 | **Total Issues** | Overall number of issues found |
 | **Critical** | High-priority issues that need immediate attention |
@@ -215,33 +222,27 @@ ollama serve
 
 A score from **0–100** based on:
 
-- Number of issues (each issue reduces score by 5 points)
-- Critical issues (each critical reduces score by an additional 10 points)
+- Each issue reduces score by 5 points
+- Critical issues reduce score by an additional 10 points
 
 ### Issue Categories
 
-| Level | Description |
+| Severity | Description |
 |---|---|
 | 🔴 **Critical** | Security vulnerabilities, potential crashes, data loss |
 | ⚠️ **Warning** | Performance issues, code smells, best practice violations |
 | ℹ️ **Info** | Suggestions for improvement, minor optimizations |
 
-### Suggestions
-
-Each function includes actionable suggestions for improvement with code examples.
-
 ---
 
 ## 🛠️ Requirements
-
-### For Running the Tool
 
 - .NET 8.0 SDK or later
 
 ### For Ollama Provider
 
 - Ollama installed
-- At least 8GB RAM (16GB recommended for larger models)
+- At least 8GB RAM (16GB recommended)
 
 ### For Cloud Providers
 
@@ -256,9 +257,7 @@ Each function includes actionable suggestions for improvement with code examples
 AICodeReviewer/
 ├── AICodeReviewer.Console/           # Main application
 │   ├── Program.cs                    # Entry point
-│   ├── appsettings.json              # Configuration
 │   ├── Services/                     # Report generators
-│   │   └── PdfReportGenerator.cs
 │   └── Configuration/                # Configuration classes
 │
 ├── AICodeReviewer.Core/              # Core logic
@@ -273,17 +272,16 @@ AICodeReviewer/
 │   ├── Interfaces/                   # Interfaces
 │   └── Services/                     # Core services
 │
-├── samples/                          # Example projects (for testing)
-├── README.md                         # This file
-├── LICENSE                           # MIT License
-└── AICodeReviewer.sln                # Solution file
+├── README.md
+├── LICENSE
+└── AICodeReviewer.sln
 ```
 
 ---
 
 ## 🤝 Contributing
 
-Contributions are welcome! Here's how you can help:
+Contributions are welcome!
 
 1. **Fork** the repository
 2. **Create** a feature branch:
@@ -306,21 +304,6 @@ git push origin feature/amazing-feature
 
 5. **Open a Pull Request**
 
-### Development Setup
-
-```bash
-# Clone your fork
-git clone https://github.com/asmaa-elfatayry/AI-Code-Reviewer-Murajea
-cd AICodeReviewer
-
-# Build and test
-dotnet build
-dotnet test
-
-# Run with sample
-dotnet run --project AICodeReviewer.Console -- samples/SampleProject
-```
-
 ---
 
 ## 📝 License
@@ -342,15 +325,10 @@ This project is licensed under the **MIT License** – see the [LICENSE](LICENSE
 ## 📧 Contact & Support
 
 - **GitHub Issues:** [Report a bug or request a feature](https://github.com/asmaa-elfatayry/AI-Code-Reviewer-Murajea/issues)
-- **Email:** your.email@example.com
+- **Email:** asmaa.elfatayry@example.com
 
 ---
 
-## ⭐ Show Your Support
-
-If you find this tool useful, please give it a **star ⭐** on GitHub!  
-It helps others discover the project and motivates continued development.
-
----
 
 Made with curiosity to help others ✨
+

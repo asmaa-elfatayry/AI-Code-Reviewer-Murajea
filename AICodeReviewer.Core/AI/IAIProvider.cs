@@ -15,6 +15,9 @@ public interface IAIProvider
     /// </summary>
     Task<string> GenerateSummaryAsync(List<FunctionReview> reviews);
 
+
+    void SetLanguage(string language);
+
     /// <summary>
     /// Name of the provider (for logging/debugging)
     /// </summary>

@@ -3,7 +3,6 @@ using System.Net.Http.Headers;
 using System.Text;
 using System.Text.Json;
 
-
 namespace AICodeReviewer.Core.AI.Providers;
 
 public class DeepSeekProvider : IAIProvider
@@ -11,6 +10,7 @@ public class DeepSeekProvider : IAIProvider
     private readonly HttpClient _httpClient;
     private readonly string _apiKey;
     private readonly string _model;
+    private string _language = "en";  // 👈 إضافة
 
     public string ProviderName => "DeepSeek";
     public bool IsAvailable => !string.IsNullOrEmpty(_apiKey);
@@ -24,28 +24,68 @@ public class DeepSeekProvider : IAIProvider
             new AuthenticationHeaderValue("Bearer", _apiKey);
     }
 
+    public void SetLanguage(string language)  // 👈 إضافة
+    {
+        _language = language;
+    }
+
     public async Task<FunctionReview> ReviewFunctionAsync(FunctionReview function)
     {
+        // 👈 اختيار الـ System Prompt حسب اللغة
+        var systemPrompt = _language == "ar"
+            ? @"أنت خبير متخصص في .NET و C# مع خبرة 10 سنوات.
+مهمتك هي تحليل كود C# وتقديم ملاحظات بناءة ودقيقة.
+يجب أن يكون الرد بصيغة JSON فقط بدون أي نص خارج JSON."
+            : @"You are a senior .NET backend developer. Respond with valid JSON only.";
+
+        // 👈 اختيار الـ User Prompt حسب اللغة
+        var userPrompt = _language == "ar"
+            ? $@"
+قم بمراجعة دالة C# التالية:
+
+اسم الدالة: {function.FunctionName}
+رقم السطر: {function.LineNumber}
+
+الكود:
+```csharp
+{function.Code}
+قم بالرد بصيغة JSON بالهيكل التالي:
+{{
+""issues"": [
+{{ ""severity"": ""Warning"", ""message"": ""وصف المشكلة"", ""codeSnippet"": ""السطر المرتبط"" }}
+],
+""suggestion"": ""اقتراح التحسين الشامل""
+}}
+
+درجة الخطورة: ""Info""، ""Warning""، أو ""Critical"".
+قم بالرد باللغة العربية."
+: $@"
+Review this C# function:
+
+Function Name: {function.FunctionName}
+Line Number: {function.LineNumber}
+
+Code:
+
+csharp
+{function.Code}
+Return JSON with this exact structure:
+{{
+""issues"": [
+{{ ""severity"": ""Warning"", ""message"": ""issue description"", ""codeSnippet"": ""relevant code line"" }}
+],
+""suggestion"": ""overall improvement suggestion""
+}}
+
+Severity must be: ""Info"", ""Warning"", or ""Critical"".";
+
         var request = new
         {
             model = _model,
             messages = new[]
-            {
-            new {
-                role = "system",
-                content = @"You are a senior .NET backend developer. Respond with valid JSON only."
-            },
-            new {
-                role = "user",
-                content = $@"
-Review this C# function:
-
-Function: {function.FunctionName}
-Code:
-```csharp
-{function.Code}
-Return JSON: {{ ""issues"": [{{ ""severity"": ""Warning"", ""message"": ""..."" }}], ""suggestion"": ""..."" }}"
-}
+        {
+new { role = "system", content = systemPrompt },
+new { role = "user", content = userPrompt }
 },
             temperature = 0.3,
             max_tokens = 800
@@ -72,7 +112,9 @@ Return JSON: {{ ""issues"": [{{ ""severity"": ""Warning"", ""message"": ""..."" 
         }
         catch (Exception ex)
         {
-            function.Suggestion = $"⚠️ DeepSeek Error: {ex.Message}";
+            function.Suggestion = _language == "ar"
+            ? $"⚠️ خطأ في DeepSeek: {ex.Message}"
+            : $"⚠️ DeepSeek Error: {ex.Message}";
             function.Issues = new List<Issue>();
         }
 
@@ -85,7 +127,31 @@ Return JSON: {{ ""issues"": [{{ ""severity"": ""Warning"", ""message"": ""..."" 
         var critical = reviews.Sum(r => r.Issues.Count(i => i.Severity == IssueSeverity.Critical));
         var warnings = reviews.Sum(r => r.Issues.Count(i => i.Severity == IssueSeverity.Warning));
 
-        var result = $@"
+        if (_language == "ar")
+        {
+            var result = $@"
+📊 ملخص المراجعة
+━━━━━━━━━━━━━━━━━━━━━━━━━━
+📝 عدد الدوال التي تمت مراجعتها: {reviews.Count}
+🐛 إجمالي المشاكل: {totalIssues}
+🔴 خطيرة: {critical}
+⚠️ تحذيرات: {warnings}
+";
+
+            if (critical > 0)
+            {
+                result += "\n⚠️ يرجى إصلاح المشاكل الخطيرة قبل المتابعة!";
+            }
+            else if (totalIssues == 0)
+            {
+                result += "\n✨ ممتاز! لم يتم العثور على أي مشاكل.";
+            }
+
+            return await Task.FromResult(result);
+        }
+        else
+        {
+            var result = $@"
 📊 Review Summary
 ━━━━━━━━━━━━━━━━━━━━━━━━━━
 📝 Functions reviewed: {reviews.Count}
@@ -94,21 +160,21 @@ Return JSON: {{ ""issues"": [{{ ""severity"": ""Warning"", ""message"": ""..."" 
 ⚠️ Warnings: {warnings}
 ";
 
-        if (critical > 0)
-        {
-            result += "\n⚠️ Please fix critical issues before merging!";
-        }
-        else if (totalIssues == 0)
-        {
-            result += "\n✨ Excellent! No issues found.";
-        }
+            if (critical > 0)
+            {
+                result += "\n⚠️ Please fix critical issues before merging!";
+            }
+            else if (totalIssues == 0)
+            {
+                result += "\n✨ Excellent! No issues found.";
+            }
 
-        return await Task.FromResult(result);
+            return await Task.FromResult(result);
+        }
     }
 
     private (List<Issue> issues, string suggestion) ParseResponse(string response)
     {
-        // نفس الـ ParseResponse من OllamaProvider
         try
         {
             var json = response.Trim();
@@ -156,7 +222,7 @@ Return JSON: {{ ""issues"": [{{ ""severity"": ""Warning"", ""message"": ""..."" 
         }
         catch
         {
-            return (new List<Issue>(), "Unable to parse response");
+            return (new List<Issue>(), _language == "ar" ? "تعذر تحليل استجابة الذكاء الاصطناعي" : "Unable to parse response");
         }
     }
 }

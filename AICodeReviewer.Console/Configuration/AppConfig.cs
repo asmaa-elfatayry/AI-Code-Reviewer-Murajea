@@ -7,6 +7,7 @@ namespace AICodeReviewer.Console.Configuration;
 /// </summary>
 public class AppConfig
 {
+    public string? Language { get; set; }
     public AIConfig? AI { get; set; }
 }
 

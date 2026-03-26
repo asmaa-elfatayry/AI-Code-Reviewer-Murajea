@@ -11,12 +11,13 @@ public static class AIReviewerFactory
     }
 
     public static IAIProvider CreateProvider(
-        ProviderType provider,
-        string? apiKey = null,
-        string? model = null,
-        string? baseUrl = null)
+          ProviderType provider,
+          string? apiKey = null,
+          string? model = null,
+          string? baseUrl = null,
+          string? language = "en")  // 👈 إضافة language
     {
-        return provider switch
+        IAIProvider aiProvider = provider switch
         {
             ProviderType.Ollama => new OllamaProvider(
                 model ?? "codellama:7b-instruct",
@@ -30,8 +31,12 @@ public static class AIReviewerFactory
                 apiKey ?? throw new ArgumentException("API key required for DeepSeek"),
                 model ?? "deepseek-chat"),
 
-
             _ => throw new NotSupportedException($"Provider {provider} not supported")
         };
+
+        // 👈 تعيين اللغة
+        aiProvider.SetLanguage(language);
+
+        return aiProvider;
     }
 }
